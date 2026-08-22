@@ -11,7 +11,14 @@ import (
 var (
 	isoDateRe     = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}$`)
 	isoDateTimeRe = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}(?::?\d{2})?)?$`)
-	shortTZOffset = regexp.MustCompile(`(:\d{2})([+-]\d{2})$`)
+	// fullOffsetRe matches a complete "+HH:MM"/"-HH:MM" offset at the end of
+	// a datetime string.
+	fullOffsetRe = regexp.MustCompile(`[+-]\d{2}:\d{2}$`)
+	// bareOffsetRe matches a minutes-less "+HH"/"-HH" offset at the end of a
+	// datetime string — e.g. the API renders UTC timestamps as "...+00"
+	// rather than "...Z" or "...+00:00", even when fractional seconds are
+	// present, so this can't be anchored to the seconds field.
+	bareOffsetRe = regexp.MustCompile(`[+-]\d{2}$`)
 )
 
 // Time is an ISO 8601 date or datetime, as returned by the API. It unmarshals
@@ -33,11 +40,14 @@ func parseAPITime(s string) (time.Time, error) {
 	}
 
 	normalized := strings.Replace(s, " ", "T", 1)
-	normalized = shortTZOffset.ReplaceAllString(normalized, "$1$2:00")
 
-	hasOffset := strings.HasSuffix(normalized, "Z") ||
-		regexp.MustCompile(`[+-]\d{2}:\d{2}$`).MatchString(normalized)
-	if !hasOffset {
+	switch {
+	case strings.HasSuffix(normalized, "Z"), fullOffsetRe.MatchString(normalized):
+		// Already fully-specified.
+	case bareOffsetRe.MatchString(normalized):
+		normalized = bareOffsetRe.ReplaceAllString(normalized, "$0:00")
+	default:
+		// No timezone info at all; assume UTC.
 		normalized += "Z"
 	}
 

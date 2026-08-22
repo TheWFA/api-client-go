@@ -2,7 +2,6 @@ package wfa
 
 import (
 	"encoding/json"
-	"runtime"
 	"testing"
 	"time"
 )
@@ -43,6 +42,18 @@ func TestTimeUnmarshalJSON(t *testing.T) {
 			name:  "datetime with short offset",
 			input: `"2026-08-22T12:00:00+01"`,
 			want:  time.Date(2026, 8, 22, 12, 0, 0, 0, time.FixedZone("", 3600)),
+		},
+		{
+			// The live API renders UTC timestamps this way: a bare, minutes-less
+			// offset immediately after fractional seconds, with no "Z".
+			name:  "datetime with fractional seconds and short offset",
+			input: `"2026-08-22T12:13:08.827805+00"`,
+			want:  time.Date(2026, 8, 22, 12, 13, 8, 827805000, time.UTC),
+		},
+		{
+			name:  "datetime with fractional seconds and non-UTC short offset",
+			input: `"2026-08-22T12:13:08.827805+05"`,
+			want:  time.Date(2026, 8, 22, 12, 13, 8, 827805000, time.FixedZone("", 5*3600)),
 		},
 		{
 			name:  "datetime with full offset",
@@ -112,15 +123,4 @@ func TestTimeRoundTrip(t *testing.T) {
 	if !roundTripped.At.Equal(original.At.Time) {
 		t.Errorf("got %v, want %v", roundTripped.At.Time, original.At.Time)
 	}
-}
-
-// TestDiagnosticRegexInCI is a temporary diagnostic to compare regex
-// behavior between local development and the CI runner. Remove once the CI
-// integration-test time-parsing discrepancy is understood. Always fails so
-// its output is visible in CI without -v.
-func TestDiagnosticRegexInCI(t *testing.T) {
-	s := "2026-08-22T12:13:08.827805+00Z"
-	got, err := parseAPITime(s)
-	t.Errorf("DIAGNOSTIC: GOOS=%s GOARCH=%s pattern=%q matches=%v parseAPITime(%q)=(%v, %v)",
-		runtime.GOOS, runtime.GOARCH, isoDateTimeRe.String(), isoDateTimeRe.MatchString(s), s, got, err)
 }
