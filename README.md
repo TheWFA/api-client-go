@@ -210,6 +210,18 @@ If the raw body and headers are already available separately (e.g. from a framew
 
 ---
 
+## Integration tests
+
+`client/integration_test.go` exercises every resource against the real API. It's gated behind the `integration` build tag and skips at runtime unless `WFA_API_KEY` is set, so a plain `go test ./...` never makes network calls:
+
+```bash
+WFA_API_KEY=... go test -tags=integration ./client/...
+```
+
+Set `WFA_API_BASE_URL` to point at a non-default environment.
+
+---
+
 ## Development
 
 ```bash
