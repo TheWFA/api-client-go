@@ -145,6 +145,7 @@ type FullMatch struct {
 type ListQuery struct {
 	wfa.ListParams
 
+	ID             []wfa.Snowflake
 	TeamID         []wfa.Snowflake
 	CompetitionID  []wfa.Snowflake
 	OrganisationID []wfa.Snowflake
@@ -162,6 +163,7 @@ type ListQuery struct {
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
+	wfa.SetSnowflakes(v, "id", q.ID)
 	wfa.SetSnowflakes(v, "teamId", q.TeamID)
 	wfa.SetSnowflakes(v, "competitionId", q.CompetitionID)
 	wfa.SetSnowflakes(v, "organisationId", q.OrganisationID)

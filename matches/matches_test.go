@@ -35,6 +35,7 @@ func TestListQueryEncoding(t *testing.T) {
 	})
 
 	_, err := svc.List(context.Background(), matches.ListQuery{
+		ID:              []wfa.Snowflake{7, 8},
 		TeamID:          []wfa.Snowflake{1, 2},
 		Status:          []matches.Status{matches.StatusScheduled, matches.StatusFullTime},
 		OrderByDateDesc: wfa.Bool(true),
@@ -50,6 +51,8 @@ func TestListQueryEncoding(t *testing.T) {
 	}
 
 	want := map[string]string{
+		"id[0]":           "7",
+		"id[1]":           "8",
 		"teamId[0]":       "1",
 		"teamId[1]":       "2",
 		"status[0]":       "scheduled",
@@ -90,7 +93,7 @@ func TestGetDecodesPolymorphicEvents(t *testing.T) {
 		"awayLineups": [],
 		"penalties": [],
 		"events": [
-			{"type": "goal", "createdAt": "2026-08-22T12:10:00Z", "time": 10, "matchPeriod": "first-half", "teamId": 1, "player": {"id": 3, "name": "Scorer"}, "penalty": false, "goalType": "goal"},
+			{"type": "goal", "createdAt": "2026-08-22T12:10:00Z", "time": 10, "matchPeriod": "first-half", "teamId": 1, "player": {"id": 3, "name": "Scorer"}, "assister": {"id": 6, "name": "Assister"}, "penalty": false, "goalType": "goal"},
 			{"type": "yellow_card", "createdAt": "2026-08-22T12:20:00Z", "time": 20, "matchPeriod": "first-half", "teamId": 2, "player": {"id": 4, "name": "Booked"}},
 			{"type": "substitution", "createdAt": "2026-08-22T12:30:00Z", "time": 30, "matchPeriod": "second-half", "teamId": 1, "playerOn": {"id": 5, "name": "On"}, "playerOff": {"id": 3, "name": "Off"}}
 		]
@@ -116,6 +119,9 @@ func TestGetDecodesPolymorphicEvents(t *testing.T) {
 	}
 	if goal.EventType() != matches.EventTypeGoal || goal.Player.Name != "Scorer" {
 		t.Errorf("unexpected goal event: %+v", goal)
+	}
+	if goal.Assister == nil || goal.Assister.Name != "Assister" {
+		t.Errorf("unexpected goal assister: %+v", goal.Assister)
 	}
 
 	card, ok := match.Events[1].(matches.CardEvent)

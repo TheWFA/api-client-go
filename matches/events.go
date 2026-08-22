@@ -55,9 +55,10 @@ type baseEvent struct {
 // GoalEvent records a goal, including own goals and penalties.
 type GoalEvent struct {
 	baseEvent
-	Player   wfa.PersonRef `json:"player"`
-	Penalty  bool          `json:"penalty"`
-	GoalType GoalType      `json:"goalType"`
+	Player   wfa.PersonRef  `json:"player"`
+	Assister *wfa.PersonRef `json:"assister"`
+	Penalty  bool           `json:"penalty"`
+	GoalType GoalType       `json:"goalType"`
 }
 
 // EventType implements Event.

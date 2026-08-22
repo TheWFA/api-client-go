@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-08-22
+
+### Added
+
+- `matches.ListQuery.ID`, filtering the matches list by a list of match IDs.
+- `matches.GoalEvent.Assister`, the assisting player on a goal event (`*wfa.PersonRef`, `nil` for unassisted goals).
+
 ## [1.1.0] - 2026-08-22
 
 ### Added
@@ -34,6 +41,7 @@ Initial release.
 - `Time` parsing rejected the API's actual timestamp format for UTC values with fractional seconds (a bare `+00` offset with no minutes or colon) — found via the live integration suite.
 - `Accreditation.ID` was typed as `string`, following the reference JS client; the API actually returns an integer — also found via the live integration suite.
 
-[Unreleased]: https://github.com/TheWFA/api-client-go/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/TheWFA/api-client-go/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/TheWFA/api-client-go/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/TheWFA/api-client-go/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/TheWFA/api-client-go/releases/tag/v1.0.0
