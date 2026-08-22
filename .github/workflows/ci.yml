@@ -73,3 +73,23 @@ jobs:
           # in every subpackage). Pin to a v2 release verified to work.
           version: v2.13.1
           args: --build-tags=integration
+
+  integration:
+    name: Integration tests (live API)
+    runs-on: ubuntu-latest
+    # Only on pushes to main, never on pull_request — PRs from forks don't
+    # get environment secrets, and this hits the real API on every run.
+    if: github.event_name == 'push'
+    environment: Development
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.x"
+
+      - name: Test
+        env:
+          WFA_API_KEY: ${{ secrets.WFA_API_KEY }}
+          WFA_API_BASE_URL: ${{ secrets.WFA_API_BASE_URL }}
+        run: go test -tags=integration ./client/... -v
