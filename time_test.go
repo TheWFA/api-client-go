@@ -2,6 +2,7 @@ package wfa
 
 import (
 	"encoding/json"
+	"runtime"
 	"testing"
 	"time"
 )
@@ -111,4 +112,15 @@ func TestTimeRoundTrip(t *testing.T) {
 	if !roundTripped.At.Equal(original.At.Time) {
 		t.Errorf("got %v, want %v", roundTripped.At.Time, original.At.Time)
 	}
+}
+
+// TestDiagnosticRegexInCI is a temporary diagnostic to compare regex
+// behavior between local development and the CI runner. Remove once the CI
+// integration-test time-parsing discrepancy is understood. Always fails so
+// its output is visible in CI without -v.
+func TestDiagnosticRegexInCI(t *testing.T) {
+	s := "2026-08-22T12:13:08.827805+00Z"
+	got, err := parseAPITime(s)
+	t.Errorf("DIAGNOSTIC: GOOS=%s GOARCH=%s pattern=%q matches=%v parseAPITime(%q)=(%v, %v)",
+		runtime.GOOS, runtime.GOARCH, isoDateTimeRe.String(), isoDateTimeRe.MatchString(s), s, got, err)
 }
