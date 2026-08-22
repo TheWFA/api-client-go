@@ -265,8 +265,20 @@ func TestIntegrationAccreditations(t *testing.T) {
 	c := newIntegrationClient(t, requireAPIKey(t))
 	ctx := integrationContext(t)
 
-	if _, err := c.Accreditations.List(ctx, accreditationsListQuery(5)); err != nil {
+	page, err := c.Accreditations.List(ctx, accreditationsListQuery(5))
+	if err != nil {
 		t.Fatalf("Accreditations.List: %v", err)
+	}
+
+	if len(page.Items) > 0 {
+		acc, err := c.Accreditations.Get(ctx, page.Items[0].ID)
+		if err != nil {
+			t.Fatalf("Accreditations.Get: %v", err)
+		}
+
+		if acc.ID != page.Items[0].ID {
+			t.Errorf("ID = %d, want %d", acc.ID, page.Items[0].ID)
+		}
 	}
 
 	facets, err := c.Accreditations.Facets(ctx)

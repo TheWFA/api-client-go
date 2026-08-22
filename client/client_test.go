@@ -74,21 +74,21 @@ func TestHistoryPaths(t *testing.T) {
 	}
 }
 
-func TestAccreditationsGetStringID(t *testing.T) {
+func TestAccreditationsGetIntID(t *testing.T) {
 	var gotPath string
 
 	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		gotPath = r.URL.Path
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"id":"abc-123","name":"Media","description":"","category":"media","issuingBody":"WFA","validityPeriod":null,"createdAt":"2026-01-01","holderCount":3}`))
+		_, _ = w.Write([]byte(`{"id":123,"name":"Media","description":"","category":"media","issuingBody":"WFA","validityPeriod":null,"createdAt":"2026-01-01","holderCount":3}`))
 	})
 
-	acc, err := c.Accreditations.Get(context.Background(), "abc-123")
+	acc, err := c.Accreditations.Get(context.Background(), 123)
 	if err != nil {
 		t.Fatalf("Get: %v", err)
 	}
 
-	if want := "/accreditations/abc-123"; gotPath != want {
+	if want := "/accreditations/123"; gotPath != want {
 		t.Errorf("path = %q, want %q", gotPath, want)
 	}
 

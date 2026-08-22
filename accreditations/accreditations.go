@@ -12,7 +12,7 @@ import (
 
 // Accreditation is a summary of an accreditation.
 type Accreditation struct {
-	ID             string   `json:"id"`
+	ID             int      `json:"id"`
 	Name           string   `json:"name"`
 	Description    string   `json:"description"`
 	Category       string   `json:"category"`
@@ -23,7 +23,7 @@ type Accreditation struct {
 
 // FullAccreditation is an Accreditation with its holder count.
 type FullAccreditation struct {
-	ID             string   `json:"id"`
+	ID             int      `json:"id"`
 	Name           string   `json:"name"`
 	Description    string   `json:"description"`
 	Category       string   `json:"category"`
@@ -76,6 +76,6 @@ func (s *Service) Facets(ctx context.Context) (Facets, error) {
 }
 
 // Get retrieves detailed information about a specific accreditation.
-func (s *Service) Get(ctx context.Context, id string) (FullAccreditation, error) {
-	return wfa.Get[FullAccreditation](ctx, s.backend, fmt.Sprintf("/accreditations/%s", id), nil)
+func (s *Service) Get(ctx context.Context, id int) (FullAccreditation, error) {
+	return wfa.Get[FullAccreditation](ctx, s.backend, fmt.Sprintf("/accreditations/%d", id), nil)
 }
