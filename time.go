@@ -67,5 +67,5 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 
 // MarshalJSON implements json.Marshaler.
 func (t Time) MarshalJSON() ([]byte, error) {
-	return json.Marshal(t.Time.Format(time.RFC3339Nano))
+	return json.Marshal(t.Format(time.RFC3339Nano))
 }

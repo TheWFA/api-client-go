@@ -72,7 +72,7 @@ func TestTimeUnmarshalJSON(t *testing.T) {
 				t.Fatalf("Unmarshal: %v", err)
 			}
 
-			if !got.Time.Equal(tt.want) {
+			if !got.Equal(tt.want) {
 				t.Errorf("got %v, want %v", got.Time, tt.want)
 			}
 		})
@@ -108,7 +108,7 @@ func TestTimeRoundTrip(t *testing.T) {
 		t.Fatalf("Unmarshal: %v", err)
 	}
 
-	if !roundTripped.At.Time.Equal(original.At.Time) {
+	if !roundTripped.At.Equal(original.At.Time) {
 		t.Errorf("got %v, want %v", roundTripped.At.Time, original.At.Time)
 	}
 }

@@ -111,7 +111,7 @@ type ListQuery struct {
 
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
-	q.ListParams.Apply(v)
+	q.Apply(v)
 	wfa.SetInt(v, "clubId", q.ClubID)
 
 	return v
@@ -127,7 +127,7 @@ type PlayersQuery struct {
 
 func (q PlayersQuery) encode() url.Values {
 	v := url.Values{}
-	q.ListParams.Apply(v)
+	q.Apply(v)
 	wfa.SetInt(v, "competitionId", q.CompetitionID)
 	wfa.SetInt(v, "seasonId", q.SeasonID)
 	wfa.SetBool(v, "activeOnly", q.ActiveOnly)
@@ -146,7 +146,7 @@ type StaffQuery struct {
 
 func (q StaffQuery) encode() url.Values {
 	v := url.Values{}
-	q.ListParams.Apply(v)
+	q.Apply(v)
 	wfa.SetInt(v, "competitionId", q.CompetitionID)
 	wfa.SetInt(v, "seasonId", q.SeasonID)
 	wfa.SetBool(v, "activeOnly", q.ActiveOnly)
@@ -164,7 +164,7 @@ type RegistrationsQuery struct {
 
 func (q RegistrationsQuery) encode() url.Values {
 	v := url.Values{}
-	q.ListParams.Apply(v)
+	q.Apply(v)
 	wfa.SetInt(v, "competitionId", q.CompetitionID)
 	wfa.SetInt(v, "seasonId", q.SeasonID)
 

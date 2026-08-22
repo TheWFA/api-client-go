@@ -74,7 +74,7 @@ type ListQuery struct {
 
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
-	q.ListParams.Apply(v)
+	q.Apply(v)
 	wfa.SetInt(v, "personId", q.PersonID)
 	wfa.SetInt(v, "competitionId", q.CompetitionID)
 	wfa.SetInt(v, "seasonId", q.SeasonID)
@@ -101,7 +101,7 @@ type PersonQuery struct {
 // Encode renders q as URL query parameters.
 func (q PersonQuery) Encode() url.Values {
 	v := url.Values{}
-	q.ListParams.Apply(v)
+	q.Apply(v)
 	wfa.SetInt(v, "competitionId", q.CompetitionID)
 	wfa.SetInt(v, "seasonId", q.SeasonID)
 	wfa.SetInt(v, "servedInMatchId", q.ServedInMatchID)

@@ -31,7 +31,7 @@ func TestListQueryEncoding(t *testing.T) {
 	svc := newTestService(t, func(w http.ResponseWriter, r *http.Request) {
 		gotQuery = r.URL.RawQuery
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"items":[],"totalItems":0,"page":1,"itemsPerPage":20}`))
+		_, _ = w.Write([]byte(`{"items":[],"totalItems":0,"page":1,"itemsPerPage":20}`))
 	})
 
 	_, err := svc.List(context.Background(), matches.ListQuery{
@@ -98,7 +98,7 @@ func TestGetDecodesPolymorphicEvents(t *testing.T) {
 
 	svc := newTestService(t, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(body))
+		_, _ = w.Write([]byte(body))
 	})
 
 	match, err := svc.Get(context.Background(), 1)

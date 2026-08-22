@@ -36,7 +36,7 @@ func TestCompetitionsGetOptionalSeasonID(t *testing.T) {
 	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		gotQuery = r.URL.RawQuery
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"id":1,"name":"C","type":"league","badgeUrl":null,"sortOrder":0,"hidden":false,"organisation":null,"season":null,"matchGroups":[]}`))
+		_, _ = w.Write([]byte(`{"id":1,"name":"C","type":"league","badgeUrl":null,"sortOrder":0,"hidden":false,"organisation":null,"season":null,"matchGroups":[]}`))
 	})
 
 	if _, err := c.Competitions.Get(context.Background(), 1, nil); err != nil {
@@ -62,7 +62,7 @@ func TestHistoryPaths(t *testing.T) {
 	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		gotPath = r.URL.Path
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"items":[],"totalItems":0}`))
+		_, _ = w.Write([]byte(`{"items":[],"totalItems":0}`))
 	})
 
 	if _, err := c.History.List(context.Background(), wfa.HistoryEntityTeam, 42); err != nil {
@@ -80,7 +80,7 @@ func TestAccreditationsGetStringID(t *testing.T) {
 	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
 		gotPath = r.URL.Path
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"id":"abc-123","name":"Media","description":"","category":"media","issuingBody":"WFA","validityPeriod":null,"createdAt":"2026-01-01","holderCount":3}`))
+		_, _ = w.Write([]byte(`{"id":"abc-123","name":"Media","description":"","category":"media","issuingBody":"WFA","validityPeriod":null,"createdAt":"2026-01-01","holderCount":3}`))
 	})
 
 	acc, err := c.Accreditations.Get(context.Background(), "abc-123")

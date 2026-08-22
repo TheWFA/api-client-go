@@ -173,7 +173,7 @@ type ListQuery struct {
 
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
-	q.ListParams.Apply(v)
+	q.Apply(v)
 	wfa.SetEnums(v, "type", q.Type)
 	wfa.SetInt(v, "teamId", q.TeamID)
 	wfa.SetInt(v, "competitionId", q.CompetitionID)
@@ -194,7 +194,7 @@ type RegistrationsQuery struct {
 
 func (q RegistrationsQuery) encode() url.Values {
 	v := url.Values{}
-	q.ListParams.Apply(v)
+	q.Apply(v)
 	wfa.SetEnums(v, "type", q.Type)
 	wfa.SetInt(v, "teamId", q.TeamID)
 	wfa.SetInt(v, "competitionId", q.CompetitionID)
@@ -220,7 +220,7 @@ type AppearancesQuery struct {
 
 func (q AppearancesQuery) encode() url.Values {
 	v := url.Values{}
-	q.ListParams.Apply(v)
+	q.Apply(v)
 	wfa.SetInt(v, "teamId", q.TeamID)
 	wfa.SetInt(v, "competitionId", q.CompetitionID)
 	wfa.SetInt(v, "seasonId", q.SeasonID)

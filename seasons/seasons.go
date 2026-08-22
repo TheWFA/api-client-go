@@ -34,7 +34,7 @@ type ListQuery struct {
 
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
-	q.ListParams.Apply(v)
+	q.Apply(v)
 	wfa.SetString(v, "activeOn", q.ActiveOn)
 
 	return v

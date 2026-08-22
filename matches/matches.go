@@ -161,7 +161,7 @@ type ListQuery struct {
 
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
-	q.ListParams.Apply(v)
+	q.Apply(v)
 	wfa.SetInts(v, "teamId", q.TeamID)
 	wfa.SetInts(v, "competitionId", q.CompetitionID)
 	wfa.SetInts(v, "organisationId", q.OrganisationID)

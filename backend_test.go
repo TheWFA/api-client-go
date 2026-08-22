@@ -33,7 +33,7 @@ func TestBackendSendsAPIKeyHeader(t *testing.T) {
 	backend, _ := newTestBackend(t, func(w http.ResponseWriter, r *http.Request) {
 		gotKey = r.Header.Get("x-api-key")
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{}`))
+		_, _ = w.Write([]byte(`{}`))
 	})
 
 	if err := backend.Get(context.Background(), "/anything", nil, &struct{}{}); err != nil {
@@ -52,7 +52,7 @@ func TestBackendCustomHeaders(t *testing.T) {
 		gotUA = r.Header.Get("User-Agent")
 		gotCustom = r.Header.Get("X-Custom")
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{}`))
+		_, _ = w.Write([]byte(`{}`))
 	}))
 	t.Cleanup(server.Close)
 
@@ -138,7 +138,7 @@ func TestBackendErrorMapping(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			backend, _ := newTestBackend(t, func(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(tt.statusCode)
-				w.Write([]byte(tt.body))
+				_, _ = w.Write([]byte(tt.body))
 			})
 
 			err := backend.Get(context.Background(), "/anything", nil, &struct{}{})
