@@ -231,6 +231,14 @@ gofmt -l .
 go test ./...
 ```
 
+To run the same checks automatically before every commit (gofmt, vet, golangci-lint if installed, test), enable the repo's git hook once per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Bypass it for a single commit with `git commit --no-verify`.
+
 ---
 
 ## License

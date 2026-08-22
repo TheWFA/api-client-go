@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Runs the same checks as CI before allowing a commit. Enable with:
+#   git config core.hooksPath .githooks
+# Bypass for a single commit with: git commit --no-verify
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+
+echo "pre-commit: gofmt"
+unformatted=$(gofmt -l .)
+if [ -n "$unformatted" ]; then
+	echo "The following files are not gofmt'd:"
+	echo "$unformatted"
+	echo "Run: gofmt -w ."
+	exit 1
+fi
+
+echo "pre-commit: go vet"
+go vet ./...
+
+if command -v golangci-lint >/dev/null 2>&1; then
+	echo "pre-commit: golangci-lint"
+	golangci-lint run --build-tags=integration ./...
+else
+	echo "pre-commit: golangci-lint not installed locally, skipping (CI will still catch lint issues)"
+	echo "  install: https://golangci-lint.run/welcome/install/"
+fi
+
+echo "pre-commit: go test"
+go test ./...
+
+echo "pre-commit: OK"
