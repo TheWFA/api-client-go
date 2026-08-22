@@ -30,12 +30,12 @@ const (
 type CardType = matches.EventType
 
 // ResolvedTeamRef holds a team reference that has either been resolved to
-// its full wfa.TeamRef, or has fallen back to its bare ID (as a string) —
-// e.g. the record was deleted, or raced the write that triggered the event.
-// Check Resolved to tell which.
+// its full wfa.TeamRef, or has fallen back to its bare ID — e.g. the record
+// was deleted, or raced the write that triggered the event. Check Resolved
+// to tell which.
 type ResolvedTeamRef struct {
 	Team *wfa.TeamRef
-	ID   string
+	ID   wfa.Snowflake
 }
 
 // Resolved reports whether the reference was resolved to a full wfa.TeamRef.
@@ -43,7 +43,7 @@ func (r ResolvedTeamRef) Resolved() bool { return r.Team != nil }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (r *ResolvedTeamRef) UnmarshalJSON(data []byte) error {
-	var id string
+	var id wfa.Snowflake
 	if err := json.Unmarshal(data, &id); err == nil {
 		r.ID = id
 		return nil
@@ -60,11 +60,11 @@ func (r *ResolvedTeamRef) UnmarshalJSON(data []byte) error {
 }
 
 // ResolvedPersonRef holds a person reference that has either been resolved
-// to its full wfa.PersonRef, or has fallen back to its bare ID (as a
-// string). Check Resolved to tell which.
+// to its full wfa.PersonRef, or has fallen back to its bare ID. Check
+// Resolved to tell which.
 type ResolvedPersonRef struct {
 	Person *wfa.PersonRef
-	ID     string
+	ID     wfa.Snowflake
 }
 
 // Resolved reports whether the reference was resolved to a full
@@ -73,7 +73,7 @@ func (r ResolvedPersonRef) Resolved() bool { return r.Person != nil }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (r *ResolvedPersonRef) UnmarshalJSON(data []byte) error {
-	var id string
+	var id wfa.Snowflake
 	if err := json.Unmarshal(data, &id); err == nil {
 		r.ID = id
 		return nil
@@ -99,7 +99,7 @@ type MatchScore struct {
 
 // Match is a resolved match reference, as embedded in webhook events.
 type Match struct {
-	ID           int                    `json:"id"`
+	ID           wfa.Snowflake          `json:"id"`
 	Status       matches.Status         `json:"status"`
 	ScheduledFor *wfa.Time              `json:"scheduledFor"`
 	Competition  wfa.CompetitionMiniRef `json:"competition"`
@@ -111,11 +111,11 @@ type Match struct {
 }
 
 // ResolvedMatchRef holds a match reference that has either been resolved to
-// its full Match, or has fallen back to its bare ID (as a string). Check
-// Resolved to tell which.
+// its full Match, or has fallen back to its bare ID. Check Resolved to tell
+// which.
 type ResolvedMatchRef struct {
 	Match *Match
-	ID    string
+	ID    wfa.Snowflake
 }
 
 // Resolved reports whether the reference was resolved to a full Match.
@@ -123,7 +123,7 @@ func (r ResolvedMatchRef) Resolved() bool { return r.Match != nil }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (r *ResolvedMatchRef) UnmarshalJSON(data []byte) error {
-	var id string
+	var id wfa.Snowflake
 	if err := json.Unmarshal(data, &id); err == nil {
 		r.ID = id
 		return nil

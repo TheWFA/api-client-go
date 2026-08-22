@@ -15,21 +15,21 @@ type Location = wfa.LocationRef
 
 // CourtRef is a lightweight reference to a court at a location.
 type CourtRef struct {
-	ID         int    `json:"id"`
-	LocationID int    `json:"locationId"`
-	Name       string `json:"name"`
+	ID         wfa.Snowflake `json:"id"`
+	LocationID wfa.Snowflake `json:"locationId"`
+	Name       string        `json:"name"`
 }
 
 // LocationWithCourts is a Location with its associated courts.
 type LocationWithCourts struct {
-	ID                int        `json:"id"`
-	Name              string     `json:"name"`
-	AddressFirstLine  string     `json:"addressFirstLine"`
-	AddressSecondLine *string    `json:"addressSecondLine"`
-	Postcode          string     `json:"postcode"`
-	County            string     `json:"county"`
-	Country           string     `json:"country"`
-	Courts            []CourtRef `json:"courts"`
+	ID                wfa.Snowflake `json:"id"`
+	Name              string        `json:"name"`
+	AddressFirstLine  string        `json:"addressFirstLine"`
+	AddressSecondLine *string       `json:"addressSecondLine"`
+	Postcode          string        `json:"postcode"`
+	County            string        `json:"county"`
+	Country           string        `json:"country"`
+	Courts            []CourtRef    `json:"courts"`
 }
 
 // ListQuery holds the filters accepted by Service.List.
@@ -60,6 +60,6 @@ func (s *Service) List(ctx context.Context, query ListQuery) (wfa.ListResponse[L
 }
 
 // Get retrieves a single location and its associated courts by ID.
-func (s *Service) Get(ctx context.Context, id int) (LocationWithCourts, error) {
+func (s *Service) Get(ctx context.Context, id wfa.Snowflake) (LocationWithCourts, error) {
 	return wfa.Get[LocationWithCourts](ctx, s.backend, fmt.Sprintf("/locations/%d", id), nil)
 }

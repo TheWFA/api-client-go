@@ -228,12 +228,12 @@ func TestParsePayloadFallsBackToBareID(t *testing.T) {
 		t.Fatalf("event is %T, want CardIssuedEvent", event)
 	}
 
-	if card.Match.Resolved() || card.Match.ID != "1" {
-		t.Errorf("expected an unresolved match with ID \"1\", got %+v", card.Match)
+	if card.Match.Resolved() || card.Match.ID != 1 {
+		t.Errorf("expected an unresolved match with ID 1, got %+v", card.Match)
 	}
 
-	if card.Player.Resolved() || card.Player.ID != "5" {
-		t.Errorf("expected an unresolved player with ID \"5\", got %+v", card.Player)
+	if card.Player.Resolved() || card.Player.ID != 5 {
+		t.Errorf("expected an unresolved player with ID 5, got %+v", card.Player)
 	}
 }
 

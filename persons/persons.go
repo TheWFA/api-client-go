@@ -27,15 +27,15 @@ type Person = wfa.PersonRef
 
 // FullPerson is a PersonRef with its role flags.
 type FullPerson struct {
-	ID         int      `json:"id"`
-	Name       string   `json:"name"`
-	FirstName  *string  `json:"firstName,omitempty"`
-	LastName   *string  `json:"lastName,omitempty"`
-	CreatedAt  wfa.Time `json:"createdAt"`
-	IsPlayer   bool     `json:"isPlayer"`
-	IsStaff    bool     `json:"isStaff"`
-	IsCoach    bool     `json:"isCoach"`
-	IsOfficial bool     `json:"isOfficial"`
+	ID         wfa.Snowflake `json:"id"`
+	Name       string        `json:"name"`
+	FirstName  *string       `json:"firstName,omitempty"`
+	LastName   *string       `json:"lastName,omitempty"`
+	CreatedAt  wfa.Time      `json:"createdAt"`
+	IsPlayer   bool          `json:"isPlayer"`
+	IsStaff    bool          `json:"isStaff"`
+	IsCoach    bool          `json:"isCoach"`
+	IsOfficial bool          `json:"isOfficial"`
 }
 
 // RegistrationType categorizes the kind of registration a person holds.
@@ -65,18 +65,18 @@ type Registration struct {
 // AppearanceMatchRef is a lightweight match reference, as embedded in
 // Appearance.
 type AppearanceMatchRef struct {
-	ID           int         `json:"id"`
-	Status       string      `json:"status"`
-	ScheduledFor *wfa.Time   `json:"scheduledFor"`
-	HomeTeam     wfa.TeamRef `json:"homeTeam"`
-	AwayTeam     wfa.TeamRef `json:"awayTeam"`
+	ID           wfa.Snowflake `json:"id"`
+	Status       string        `json:"status"`
+	ScheduledFor *wfa.Time     `json:"scheduledFor"`
+	HomeTeam     wfa.TeamRef   `json:"homeTeam"`
+	AwayTeam     wfa.TeamRef   `json:"awayTeam"`
 }
 
 // AppearanceMatchGroupRef is a lightweight match group reference, as
 // embedded in Appearance.
 type AppearanceMatchGroupRef struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID   wfa.Snowflake `json:"id"`
+	Name string        `json:"name"`
 }
 
 // Appearance is a single match appearance, returned by Service.Appearances.
@@ -107,16 +107,16 @@ type StatsSummary struct {
 // StatsMatchRef is a lightweight match reference, as embedded in
 // GoalContribution and ReceivedCard.
 type StatsMatchRef struct {
-	ID           int         `json:"id"`
-	ScheduledFor *wfa.Time   `json:"scheduledFor"`
-	HomeTeam     wfa.TeamRef `json:"homeTeam"`
-	AwayTeam     wfa.TeamRef `json:"awayTeam"`
+	ID           wfa.Snowflake `json:"id"`
+	ScheduledFor *wfa.Time     `json:"scheduledFor"`
+	HomeTeam     wfa.TeamRef   `json:"homeTeam"`
+	AwayTeam     wfa.TeamRef   `json:"awayTeam"`
 }
 
 // GoalContribution is a single goal or assist contribution, returned by both
 // StatsService.Goals and StatsService.Assists.
 type GoalContribution struct {
-	ID          int                `json:"id"`
+	ID          wfa.Snowflake      `json:"id"`
 	MatchTime   *int               `json:"matchTime"`
 	MatchPeriod *string            `json:"matchPeriod"`
 	CreatedAt   wfa.Time           `json:"createdAt"`
@@ -140,17 +140,17 @@ const (
 // CardOffenceRef is a lightweight reference to the offence a card was issued
 // for.
 type CardOffenceRef struct {
-	ID               int     `json:"id"`
-	Name             string  `json:"name"`
-	Description      *string `json:"description"`
-	Code             *string `json:"code"`
-	SuspensionLength int     `json:"suspensionLength"`
+	ID               wfa.Snowflake `json:"id"`
+	Name             string        `json:"name"`
+	Description      *string       `json:"description"`
+	Code             *string       `json:"code"`
+	SuspensionLength int           `json:"suspensionLength"`
 }
 
 // ReceivedCard is a single card received by a person, returned by
 // StatsService.Cards.
 type ReceivedCard struct {
-	ID          int                `json:"id"`
+	ID          wfa.Snowflake      `json:"id"`
 	Card        Card               `json:"card"`
 	MatchTime   *int               `json:"matchTime"`
 	MatchPeriod *string            `json:"matchPeriod"`
@@ -166,18 +166,18 @@ type ReceivedCard struct {
 type ListQuery struct {
 	wfa.ListParams
 	Type          []Type
-	TeamID        *int
-	CompetitionID *int
-	SeasonID      *int
+	TeamID        *wfa.Snowflake
+	CompetitionID *wfa.Snowflake
+	SeasonID      *wfa.Snowflake
 }
 
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
 	wfa.SetEnums(v, "type", q.Type)
-	wfa.SetInt(v, "teamId", q.TeamID)
-	wfa.SetInt(v, "competitionId", q.CompetitionID)
-	wfa.SetInt(v, "seasonId", q.SeasonID)
+	wfa.SetSnowflake(v, "teamId", q.TeamID)
+	wfa.SetSnowflake(v, "competitionId", q.CompetitionID)
+	wfa.SetSnowflake(v, "seasonId", q.SeasonID)
 
 	return v
 }
@@ -186,9 +186,9 @@ func (q ListQuery) encode() url.Values {
 type RegistrationsQuery struct {
 	wfa.ListParams
 	Type          []RegistrationType
-	TeamID        *int
-	CompetitionID *int
-	SeasonID      *int
+	TeamID        *wfa.Snowflake
+	CompetitionID *wfa.Snowflake
+	SeasonID      *wfa.Snowflake
 	ActiveOnly    *bool
 }
 
@@ -196,9 +196,9 @@ func (q RegistrationsQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
 	wfa.SetEnums(v, "type", q.Type)
-	wfa.SetInt(v, "teamId", q.TeamID)
-	wfa.SetInt(v, "competitionId", q.CompetitionID)
-	wfa.SetInt(v, "seasonId", q.SeasonID)
+	wfa.SetSnowflake(v, "teamId", q.TeamID)
+	wfa.SetSnowflake(v, "competitionId", q.CompetitionID)
+	wfa.SetSnowflake(v, "seasonId", q.SeasonID)
 	wfa.SetBool(v, "activeOnly", q.ActiveOnly)
 
 	return v
@@ -207,10 +207,10 @@ func (q RegistrationsQuery) encode() url.Values {
 // AppearancesQuery holds the filters accepted by Service.Appearances.
 type AppearancesQuery struct {
 	wfa.ListParams
-	TeamID        *int
-	CompetitionID *int
-	SeasonID      *int
-	MatchGroupID  *int
+	TeamID        *wfa.Snowflake
+	CompetitionID *wfa.Snowflake
+	SeasonID      *wfa.Snowflake
+	MatchGroupID  *wfa.Snowflake
 	Position      []matches.PlayerPosition
 	// ScheduledFrom is an ISO date or datetime string.
 	ScheduledFrom string
@@ -221,10 +221,10 @@ type AppearancesQuery struct {
 func (q AppearancesQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
-	wfa.SetInt(v, "teamId", q.TeamID)
-	wfa.SetInt(v, "competitionId", q.CompetitionID)
-	wfa.SetInt(v, "seasonId", q.SeasonID)
-	wfa.SetInt(v, "matchGroupId", q.MatchGroupID)
+	wfa.SetSnowflake(v, "teamId", q.TeamID)
+	wfa.SetSnowflake(v, "competitionId", q.CompetitionID)
+	wfa.SetSnowflake(v, "seasonId", q.SeasonID)
+	wfa.SetSnowflake(v, "matchGroupId", q.MatchGroupID)
 	wfa.SetEnums(v, "position", q.Position)
 	wfa.SetString(v, "scheduledFrom", q.ScheduledFrom)
 	wfa.SetString(v, "scheduledTo", q.ScheduledTo)
@@ -280,23 +280,23 @@ func (s *Service) List(ctx context.Context, query ListQuery) (wfa.ListResponse[P
 }
 
 // Get retrieves detailed information about a specific person.
-func (s *Service) Get(ctx context.Context, id int) (FullPerson, error) {
+func (s *Service) Get(ctx context.Context, id wfa.Snowflake) (FullPerson, error) {
 	return wfa.Get[FullPerson](ctx, s.backend, fmt.Sprintf("/persons/%d", id), nil)
 }
 
 // Registrations retrieves a person's playing and staff registrations,
 // newest first.
-func (s *Service) Registrations(ctx context.Context, id int, query RegistrationsQuery) (wfa.ListResponse[Registration], error) {
+func (s *Service) Registrations(ctx context.Context, id wfa.Snowflake, query RegistrationsQuery) (wfa.ListResponse[Registration], error) {
 	return wfa.Get[wfa.ListResponse[Registration]](ctx, s.backend, fmt.Sprintf("/persons/%d/registrations", id), query.encode())
 }
 
 // Appearances retrieves a person's match appearances.
-func (s *Service) Appearances(ctx context.Context, id int, query AppearancesQuery) (wfa.ListResponse[Appearance], error) {
+func (s *Service) Appearances(ctx context.Context, id wfa.Snowflake, query AppearancesQuery) (wfa.ListResponse[Appearance], error) {
 	return wfa.Get[wfa.ListResponse[Appearance]](ctx, s.backend, fmt.Sprintf("/persons/%d/appearances", id), query.encode())
 }
 
 // Suspensions retrieves a person's suspensions.
-func (s *Service) Suspensions(ctx context.Context, id int, query suspensions.PersonQuery) (wfa.ListResponse[suspensions.Suspension], error) {
+func (s *Service) Suspensions(ctx context.Context, id wfa.Snowflake, query suspensions.PersonQuery) (wfa.ListResponse[suspensions.Suspension], error) {
 	return wfa.Get[wfa.ListResponse[suspensions.Suspension]](ctx, s.backend, fmt.Sprintf("/persons/%d/suspensions", id), query.Encode())
 }
 
@@ -307,7 +307,7 @@ type StatsService struct {
 }
 
 // Summary retrieves a summary of a person's career statistics.
-func (s *StatsService) Summary(ctx context.Context, id int, query wfa.StatsFilterQuery) (StatsSummary, error) {
+func (s *StatsService) Summary(ctx context.Context, id wfa.Snowflake, query wfa.StatsFilterQuery) (StatsSummary, error) {
 	v := url.Values{}
 	query.Apply(v)
 
@@ -315,16 +315,16 @@ func (s *StatsService) Summary(ctx context.Context, id int, query wfa.StatsFilte
 }
 
 // Goals retrieves the goals scored by a person.
-func (s *StatsService) Goals(ctx context.Context, id int, query StatsQuery) (wfa.ListResponse[GoalContribution], error) {
+func (s *StatsService) Goals(ctx context.Context, id wfa.Snowflake, query StatsQuery) (wfa.ListResponse[GoalContribution], error) {
 	return wfa.Get[wfa.ListResponse[GoalContribution]](ctx, s.backend, fmt.Sprintf("/persons/%d/stats/goals", id), query.encode())
 }
 
 // Assists retrieves the assists made by a person.
-func (s *StatsService) Assists(ctx context.Context, id int, query StatsQuery) (wfa.ListResponse[GoalContribution], error) {
+func (s *StatsService) Assists(ctx context.Context, id wfa.Snowflake, query StatsQuery) (wfa.ListResponse[GoalContribution], error) {
 	return wfa.Get[wfa.ListResponse[GoalContribution]](ctx, s.backend, fmt.Sprintf("/persons/%d/stats/assists", id), query.encode())
 }
 
 // Cards retrieves the cards received by a person.
-func (s *StatsService) Cards(ctx context.Context, id int, query CardsQuery) (wfa.ListResponse[ReceivedCard], error) {
+func (s *StatsService) Cards(ctx context.Context, id wfa.Snowflake, query CardsQuery) (wfa.ListResponse[ReceivedCard], error) {
 	return wfa.Get[wfa.ListResponse[ReceivedCard]](ctx, s.backend, fmt.Sprintf("/persons/%d/stats/cards", id), query.encode())
 }

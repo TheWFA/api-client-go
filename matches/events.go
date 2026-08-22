@@ -46,10 +46,10 @@ type Event interface {
 
 // baseEvent holds the fields common to every match event.
 type baseEvent struct {
-	CreatedAt   wfa.Time     `json:"createdAt"`
-	Time        *int         `json:"time"`
-	MatchPeriod *EventPeriod `json:"matchPeriod"`
-	TeamID      int          `json:"teamId"`
+	CreatedAt   wfa.Time      `json:"createdAt"`
+	Time        *int          `json:"time"`
+	MatchPeriod *EventPeriod  `json:"matchPeriod"`
+	TeamID      wfa.Snowflake `json:"teamId"`
 }
 
 // GoalEvent records a goal, including own goals and penalties.

@@ -3,45 +3,45 @@ package wfa
 // TeamRef is a lightweight reference to a team, embedded in most other
 // resources.
 type TeamRef struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	Nickname string `json:"nickname"`
-	BadgeURL string `json:"badgeUrl"`
+	ID       Snowflake `json:"id"`
+	Name     string    `json:"name"`
+	Nickname string    `json:"nickname"`
+	BadgeURL string    `json:"badgeUrl"`
 }
 
 // TeamMiniRef is the smaller team reference used inside suspension servedIn
 // entries.
 type TeamMiniRef struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID   Snowflake `json:"id"`
+	Name string    `json:"name"`
 }
 
 // ClubRef is a lightweight reference to a club.
 type ClubRef struct {
-	ID       int     `json:"id"`
-	Name     string  `json:"name"`
-	ClubLogo *string `json:"clubLogo"`
+	ID       Snowflake `json:"id"`
+	Name     string    `json:"name"`
+	ClubLogo *string   `json:"clubLogo"`
 }
 
 // OrganisationRef is a lightweight reference to an organisation.
 type OrganisationRef struct {
-	ID        int     `json:"id"`
-	Name      string  `json:"name"`
-	ShortName *string `json:"shortName"`
-	BadgeURL  *string `json:"badgeUrl"`
+	ID        Snowflake `json:"id"`
+	Name      string    `json:"name"`
+	ShortName *string   `json:"shortName"`
+	BadgeURL  *string   `json:"badgeUrl"`
 }
 
 // CompetitionRef is a lightweight reference to a competition.
 type CompetitionRef struct {
-	ID       int     `json:"id"`
-	Name     string  `json:"name"`
-	BadgeURL *string `json:"badgeUrl"`
+	ID       Snowflake `json:"id"`
+	Name     string    `json:"name"`
+	BadgeURL *string   `json:"badgeUrl"`
 }
 
 // CompetitionRefWithOrganisation is a CompetitionRef that also carries its
 // parent organisation.
 type CompetitionRefWithOrganisation struct {
-	ID           int              `json:"id"`
+	ID           Snowflake        `json:"id"`
 	Name         string           `json:"name"`
 	BadgeURL     *string          `json:"badgeUrl"`
 	Organisation *OrganisationRef `json:"organisation"`
@@ -50,32 +50,32 @@ type CompetitionRefWithOrganisation struct {
 // CompetitionMiniRef is the smaller competition reference used inside
 // suspension and tie entries.
 type CompetitionMiniRef struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID   Snowflake `json:"id"`
+	Name string    `json:"name"`
 }
 
 // SeasonRef is a lightweight reference to a season.
 type SeasonRef struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	StartDate Time   `json:"startDate"`
-	EndDate   Time   `json:"endDate"`
+	ID        Snowflake `json:"id"`
+	Name      string    `json:"name"`
+	StartDate Time      `json:"startDate"`
+	EndDate   Time      `json:"endDate"`
 }
 
 // SeasonMiniRef is the smaller season reference used inside suspension and
 // tie entries.
 type SeasonMiniRef struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID   Snowflake `json:"id"`
+	Name string    `json:"name"`
 }
 
 // SeasonWithActive is a SeasonRef with its active flag.
 type SeasonWithActive struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	StartDate Time   `json:"startDate"`
-	EndDate   Time   `json:"endDate"`
-	Active    bool   `json:"active"`
+	ID        Snowflake `json:"id"`
+	Name      string    `json:"name"`
+	StartDate Time      `json:"startDate"`
+	EndDate   Time      `json:"endDate"`
+	Active    bool      `json:"active"`
 }
 
 // SeasonZoneKind categorizes a SeasonZone.
@@ -117,7 +117,7 @@ type SeasonSetup struct {
 
 // SeasonFull is a SeasonWithActive with its full rules setup.
 type SeasonFull struct {
-	ID          int         `json:"id"`
+	ID          Snowflake   `json:"id"`
 	Name        string      `json:"name"`
 	StartDate   Time        `json:"startDate"`
 	EndDate     Time        `json:"endDate"`
@@ -127,21 +127,21 @@ type SeasonFull struct {
 
 // PersonRef is a lightweight reference to a person.
 type PersonRef struct {
-	ID        int     `json:"id"`
-	Name      string  `json:"name"`
-	FirstName *string `json:"firstName,omitempty"`
-	LastName  *string `json:"lastName,omitempty"`
+	ID        Snowflake `json:"id"`
+	Name      string    `json:"name"`
+	FirstName *string   `json:"firstName,omitempty"`
+	LastName  *string   `json:"lastName,omitempty"`
 }
 
 // LocationRef is a lightweight reference to a location.
 type LocationRef struct {
-	ID                int     `json:"id"`
-	Name              string  `json:"name"`
-	AddressFirstLine  string  `json:"addressFirstLine"`
-	AddressSecondLine *string `json:"addressSecondLine"`
-	Postcode          string  `json:"postcode"`
-	County            string  `json:"county"`
-	Country           string  `json:"country"`
+	ID                Snowflake `json:"id"`
+	Name              string    `json:"name"`
+	AddressFirstLine  string    `json:"addressFirstLine"`
+	AddressSecondLine *string   `json:"addressSecondLine"`
+	Postcode          string    `json:"postcode"`
+	County            string    `json:"county"`
+	Country           string    `json:"country"`
 }
 
 // HistoryEntity identifies the kind of entity a HistoryEntry describes.
@@ -156,9 +156,9 @@ const (
 
 // HistoryEntry is one superseded-identity window for an entity.
 type HistoryEntry struct {
-	ID        int                    `json:"id"`
+	ID        Snowflake              `json:"id"`
 	Entity    HistoryEntity          `json:"entity"`
-	EntityID  int                    `json:"entityId"`
+	EntityID  Snowflake              `json:"entityId"`
 	Values    map[string]interface{} `json:"values"`
 	ValidFrom *Time                  `json:"validFrom"`
 	ValidTo   *Time                  `json:"validTo"`

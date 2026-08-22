@@ -5,10 +5,10 @@ import "net/url"
 // StatsFilterQuery holds the aggregate-stats filters shared by the team,
 // competition and person stats endpoints.
 type StatsFilterQuery struct {
-	SeasonID      []int
-	CompetitionID []int
-	MatchGroupID  []int
-	TeamID        []int
+	SeasonID      []Snowflake
+	CompetitionID []Snowflake
+	MatchGroupID  []Snowflake
+	TeamID        []Snowflake
 	// From is an ISO date or datetime string.
 	From string
 	// To is an ISO date or datetime string.
@@ -17,10 +17,10 @@ type StatsFilterQuery struct {
 
 // Apply writes q's parameters into v.
 func (q StatsFilterQuery) Apply(v url.Values) {
-	SetInts(v, "seasonId", q.SeasonID)
-	SetInts(v, "competitionId", q.CompetitionID)
-	SetInts(v, "matchGroupId", q.MatchGroupID)
-	SetInts(v, "teamId", q.TeamID)
+	SetSnowflakes(v, "seasonId", q.SeasonID)
+	SetSnowflakes(v, "competitionId", q.CompetitionID)
+	SetSnowflakes(v, "matchGroupId", q.MatchGroupID)
+	SetSnowflakes(v, "teamId", q.TeamID)
 	SetString(v, "from", q.From)
 	SetString(v, "to", q.To)
 }

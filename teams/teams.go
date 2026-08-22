@@ -11,21 +11,21 @@ import (
 
 // Team is a summary of a team.
 type Team struct {
-	ID             int          `json:"id"`
-	Name           string       `json:"name"`
-	Abbreviated    string       `json:"abbreviated"`
-	Nickname       string       `json:"nickname"`
-	BadgeURL       string       `json:"badgeUrl"`
-	GradientURL    *string      `json:"gradientUrl"`
-	ThumbnailImage *string      `json:"thumbnailImage"`
-	Primary        string       `json:"primary"`
-	Secondary      string       `json:"secondary"`
-	Club           *wfa.ClubRef `json:"club"`
+	ID             wfa.Snowflake `json:"id"`
+	Name           string        `json:"name"`
+	Abbreviated    string        `json:"abbreviated"`
+	Nickname       string        `json:"nickname"`
+	BadgeURL       string        `json:"badgeUrl"`
+	GradientURL    *string       `json:"gradientUrl"`
+	ThumbnailImage *string       `json:"thumbnailImage"`
+	Primary        string        `json:"primary"`
+	Secondary      string        `json:"secondary"`
+	Club           *wfa.ClubRef  `json:"club"`
 }
 
 // FullTeam is a Team with its history, when requested.
 type FullTeam struct {
-	ID             int                `json:"id"`
+	ID             wfa.Snowflake      `json:"id"`
 	Name           string             `json:"name"`
 	Abbreviated    string             `json:"abbreviated"`
 	Nickname       string             `json:"nickname"`
@@ -74,10 +74,10 @@ type StaffRegistration struct {
 
 // RegistrationCompetitionRef is a CompetitionRef with its competition type.
 type RegistrationCompetitionRef struct {
-	ID       int     `json:"id"`
-	Name     string  `json:"name"`
-	BadgeURL *string `json:"badgeUrl"`
-	Type     string  `json:"type"`
+	ID       wfa.Snowflake `json:"id"`
+	Name     string        `json:"name"`
+	BadgeURL *string       `json:"badgeUrl"`
+	Type     string        `json:"type"`
 }
 
 // Registration is a single competition/season entry a team is registered
@@ -106,13 +106,13 @@ type StatsSummary struct {
 // ListQuery holds the filters accepted by Service.List.
 type ListQuery struct {
 	wfa.ListParams
-	ClubID *int
+	ClubID *wfa.Snowflake
 }
 
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
-	wfa.SetInt(v, "clubId", q.ClubID)
+	wfa.SetSnowflake(v, "clubId", q.ClubID)
 
 	return v
 }
@@ -120,16 +120,16 @@ func (q ListQuery) encode() url.Values {
 // PlayersQuery holds the filters accepted by Service.Players.
 type PlayersQuery struct {
 	wfa.ListParams
-	CompetitionID *int
-	SeasonID      *int
+	CompetitionID *wfa.Snowflake
+	SeasonID      *wfa.Snowflake
 	ActiveOnly    *bool
 }
 
 func (q PlayersQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
-	wfa.SetInt(v, "competitionId", q.CompetitionID)
-	wfa.SetInt(v, "seasonId", q.SeasonID)
+	wfa.SetSnowflake(v, "competitionId", q.CompetitionID)
+	wfa.SetSnowflake(v, "seasonId", q.SeasonID)
 	wfa.SetBool(v, "activeOnly", q.ActiveOnly)
 
 	return v
@@ -138,8 +138,8 @@ func (q PlayersQuery) encode() url.Values {
 // StaffQuery holds the filters accepted by Service.Staff.
 type StaffQuery struct {
 	wfa.ListParams
-	CompetitionID *int
-	SeasonID      *int
+	CompetitionID *wfa.Snowflake
+	SeasonID      *wfa.Snowflake
 	ActiveOnly    *bool
 	Role          []StaffRole
 }
@@ -147,8 +147,8 @@ type StaffQuery struct {
 func (q StaffQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
-	wfa.SetInt(v, "competitionId", q.CompetitionID)
-	wfa.SetInt(v, "seasonId", q.SeasonID)
+	wfa.SetSnowflake(v, "competitionId", q.CompetitionID)
+	wfa.SetSnowflake(v, "seasonId", q.SeasonID)
 	wfa.SetBool(v, "activeOnly", q.ActiveOnly)
 	wfa.SetEnums(v, "role", q.Role)
 
@@ -158,15 +158,15 @@ func (q StaffQuery) encode() url.Values {
 // RegistrationsQuery holds the filters accepted by Service.Registrations.
 type RegistrationsQuery struct {
 	wfa.ListParams
-	CompetitionID *int
-	SeasonID      *int
+	CompetitionID *wfa.Snowflake
+	SeasonID      *wfa.Snowflake
 }
 
 func (q RegistrationsQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
-	wfa.SetInt(v, "competitionId", q.CompetitionID)
-	wfa.SetInt(v, "seasonId", q.SeasonID)
+	wfa.SetSnowflake(v, "competitionId", q.CompetitionID)
+	wfa.SetSnowflake(v, "seasonId", q.SeasonID)
 
 	return v
 }
@@ -188,29 +188,29 @@ func (s *Service) List(ctx context.Context, query ListQuery) (wfa.ListResponse[T
 }
 
 // Get retrieves detailed information about a specific team.
-func (s *Service) Get(ctx context.Context, id int) (FullTeam, error) {
+func (s *Service) Get(ctx context.Context, id wfa.Snowflake) (FullTeam, error) {
 	return wfa.Get[FullTeam](ctx, s.backend, fmt.Sprintf("/teams/%d", id), nil)
 }
 
 // Players retrieves the playing roster for a team.
-func (s *Service) Players(ctx context.Context, id int, query PlayersQuery) (wfa.ListResponse[PlayerRegistration], error) {
+func (s *Service) Players(ctx context.Context, id wfa.Snowflake, query PlayersQuery) (wfa.ListResponse[PlayerRegistration], error) {
 	return wfa.Get[wfa.ListResponse[PlayerRegistration]](ctx, s.backend, fmt.Sprintf("/teams/%d/players", id), query.encode())
 }
 
 // Staff retrieves the staff roster for a team.
-func (s *Service) Staff(ctx context.Context, id int, query StaffQuery) (wfa.ListResponse[StaffRegistration], error) {
+func (s *Service) Staff(ctx context.Context, id wfa.Snowflake, query StaffQuery) (wfa.ListResponse[StaffRegistration], error) {
 	return wfa.Get[wfa.ListResponse[StaffRegistration]](ctx, s.backend, fmt.Sprintf("/teams/%d/staff", id), query.encode())
 }
 
 // Registrations retrieves the competitions and seasons a team is entered
 // into.
-func (s *Service) Registrations(ctx context.Context, id int, query RegistrationsQuery) (wfa.ListResponse[Registration], error) {
+func (s *Service) Registrations(ctx context.Context, id wfa.Snowflake, query RegistrationsQuery) (wfa.ListResponse[Registration], error) {
 	return wfa.Get[wfa.ListResponse[Registration]](ctx, s.backend, fmt.Sprintf("/teams/%d/registrations", id), query.encode())
 }
 
 // Seasons retrieves every season a team has ever been registered into,
 // newest first.
-func (s *Service) Seasons(ctx context.Context, id int) (wfa.UnpaginatedListResponse[wfa.SeasonRef], error) {
+func (s *Service) Seasons(ctx context.Context, id wfa.Snowflake) (wfa.UnpaginatedListResponse[wfa.SeasonRef], error) {
 	return wfa.Get[wfa.UnpaginatedListResponse[wfa.SeasonRef]](ctx, s.backend, fmt.Sprintf("/teams/%d/seasons", id), nil)
 }
 
@@ -221,7 +221,7 @@ type StatsService struct {
 }
 
 // Summary retrieves aggregate results and discipline stats for a team.
-func (s *StatsService) Summary(ctx context.Context, id int, query wfa.StatsFilterQuery) (StatsSummary, error) {
+func (s *StatsService) Summary(ctx context.Context, id wfa.Snowflake, query wfa.StatsFilterQuery) (StatsSummary, error) {
 	v := url.Values{}
 	query.Apply(v)
 
@@ -229,6 +229,6 @@ func (s *StatsService) Summary(ctx context.Context, id int, query wfa.StatsFilte
 }
 
 // Players retrieves per-player stats aggregates for a team.
-func (s *StatsService) Players(ctx context.Context, id int, query wfa.PlayerStatsQuery) (wfa.ListResponse[wfa.PlayerStatsRow], error) {
+func (s *StatsService) Players(ctx context.Context, id wfa.Snowflake, query wfa.PlayerStatsQuery) (wfa.ListResponse[wfa.PlayerStatsRow], error) {
 	return wfa.Get[wfa.ListResponse[wfa.PlayerStatsRow]](ctx, s.backend, fmt.Sprintf("/teams/%d/stats/players", id), query.Encode())
 }

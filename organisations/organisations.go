@@ -13,18 +13,18 @@ import (
 
 // Organisation is a summary of an organisation.
 type Organisation struct {
-	ID        int      `json:"id"`
-	Name      string   `json:"name"`
-	ShortName *string  `json:"shortName"`
-	BadgeURL  *string  `json:"badgeUrl"`
-	SortOrder int      `json:"sortOrder"`
-	CreatedAt wfa.Time `json:"createdAt"`
+	ID        wfa.Snowflake `json:"id"`
+	Name      string        `json:"name"`
+	ShortName *string       `json:"shortName"`
+	BadgeURL  *string       `json:"badgeUrl"`
+	SortOrder int           `json:"sortOrder"`
+	CreatedAt wfa.Time      `json:"createdAt"`
 }
 
 // FullOrganisation is an Organisation with its competitions and, when
 // requested, its history.
 type FullOrganisation struct {
-	ID           int                        `json:"id"`
+	ID           wfa.Snowflake              `json:"id"`
 	Name         string                     `json:"name"`
 	ShortName    *string                    `json:"shortName"`
 	BadgeURL     *string                    `json:"badgeUrl"`
@@ -63,6 +63,6 @@ func (s *Service) List(ctx context.Context, query ListQuery) (wfa.ListResponse[O
 
 // Get retrieves detailed information about a specific organisation,
 // including its competitions.
-func (s *Service) Get(ctx context.Context, id int) (FullOrganisation, error) {
+func (s *Service) Get(ctx context.Context, id wfa.Snowflake) (FullOrganisation, error) {
 	return wfa.Get[FullOrganisation](ctx, s.backend, fmt.Sprintf("/organisations/%d", id), nil)
 }

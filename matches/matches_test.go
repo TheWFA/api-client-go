@@ -35,7 +35,7 @@ func TestListQueryEncoding(t *testing.T) {
 	})
 
 	_, err := svc.List(context.Background(), matches.ListQuery{
-		TeamID:          []int{1, 2},
+		TeamID:          []wfa.Snowflake{1, 2},
 		Status:          []matches.Status{matches.StatusScheduled, matches.StatusFullTime},
 		OrderByDateDesc: wfa.Bool(true),
 		ListParams:      wfa.ListParams{ItemsPerPage: wfa.Int(10)},

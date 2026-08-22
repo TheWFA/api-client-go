@@ -59,28 +59,28 @@ type Officials struct {
 // GroupRef is a lightweight reference to a competition match group (e.g. a
 // game week, pool or knockout round).
 type GroupRef struct {
-	ID            int    `json:"id"`
-	CompetitionID int    `json:"competitionId"`
-	Name          string `json:"name"`
+	ID            wfa.Snowflake `json:"id"`
+	CompetitionID wfa.Snowflake `json:"competitionId"`
+	Name          string        `json:"name"`
 }
 
 // Court is the court a match was played on.
 type Court struct {
-	ID       int             `json:"id"`
+	ID       wfa.Snowflake   `json:"id"`
 	Name     string          `json:"name"`
 	Location wfa.LocationRef `json:"location"`
 }
 
 // Stream is a broadcast stream for a match.
 type Stream struct {
-	ID           int     `json:"id"`
-	StreamURL    *string `json:"streamUrl"`
-	Commentators *string `json:"commentators"`
+	ID           wfa.Snowflake `json:"id"`
+	StreamURL    *string       `json:"streamUrl"`
+	Commentators *string       `json:"commentators"`
 }
 
 // Match is a summary of a single match, as returned by list endpoints.
 type Match struct {
-	ID               int                                `json:"id"`
+	ID               wfa.Snowflake                      `json:"id"`
 	Status           Status                             `json:"status"`
 	ScheduledFor     *wfa.Time                          `json:"scheduledFor"`
 	Times            Times                              `json:"times"`
@@ -110,7 +110,7 @@ type Player struct {
 // Penalty is a single penalty shootout attempt in a FullMatch.
 type Penalty struct {
 	Sequence int           `json:"sequence"`
-	TeamID   int           `json:"teamId"`
+	TeamID   wfa.Snowflake `json:"teamId"`
 	Scored   *bool         `json:"scored"`
 	Player   wfa.PersonRef `json:"player"`
 }
@@ -118,7 +118,7 @@ type Penalty struct {
 // FullMatch is the detailed representation of a match, including lineups,
 // events and (if applicable) the penalty shootout.
 type FullMatch struct {
-	ID               int                                `json:"id"`
+	ID               wfa.Snowflake                      `json:"id"`
 	Status           Status                             `json:"status"`
 	ScheduledFor     *wfa.Time                          `json:"scheduledFor"`
 	Times            Times                              `json:"times"`
@@ -145,12 +145,12 @@ type FullMatch struct {
 type ListQuery struct {
 	wfa.ListParams
 
-	TeamID         []int
-	CompetitionID  []int
-	OrganisationID []int
-	SeasonID       []int
-	MatchGroupID   []int
-	CourtID        []int
+	TeamID         []wfa.Snowflake
+	CompetitionID  []wfa.Snowflake
+	OrganisationID []wfa.Snowflake
+	SeasonID       []wfa.Snowflake
+	MatchGroupID   []wfa.Snowflake
+	CourtID        []wfa.Snowflake
 	Status         []Status
 	// ScheduledFrom is an ISO date or datetime string.
 	ScheduledFrom string
@@ -162,12 +162,12 @@ type ListQuery struct {
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
-	wfa.SetInts(v, "teamId", q.TeamID)
-	wfa.SetInts(v, "competitionId", q.CompetitionID)
-	wfa.SetInts(v, "organisationId", q.OrganisationID)
-	wfa.SetInts(v, "seasonId", q.SeasonID)
-	wfa.SetInts(v, "matchGroupId", q.MatchGroupID)
-	wfa.SetInts(v, "courtId", q.CourtID)
+	wfa.SetSnowflakes(v, "teamId", q.TeamID)
+	wfa.SetSnowflakes(v, "competitionId", q.CompetitionID)
+	wfa.SetSnowflakes(v, "organisationId", q.OrganisationID)
+	wfa.SetSnowflakes(v, "seasonId", q.SeasonID)
+	wfa.SetSnowflakes(v, "matchGroupId", q.MatchGroupID)
+	wfa.SetSnowflakes(v, "courtId", q.CourtID)
 	wfa.SetEnums(v, "status", q.Status)
 	wfa.SetString(v, "scheduledFrom", q.ScheduledFrom)
 	wfa.SetString(v, "scheduledTo", q.ScheduledTo)
@@ -193,6 +193,6 @@ func (s *Service) List(ctx context.Context, query ListQuery) (wfa.ListResponse[M
 
 // Get retrieves detailed information about a specific match, including
 // lineups, events and (if applicable) the penalty shootout.
-func (s *Service) Get(ctx context.Context, id int) (FullMatch, error) {
+func (s *Service) Get(ctx context.Context, id wfa.Snowflake) (FullMatch, error) {
 	return wfa.Get[FullMatch](ctx, s.backend, fmt.Sprintf("/matches/%d", id), nil)
 }

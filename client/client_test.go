@@ -47,7 +47,7 @@ func TestCompetitionsGetOptionalSeasonID(t *testing.T) {
 		t.Errorf("expected no query params when seasonID is nil, got %q", gotQuery)
 	}
 
-	if _, err := c.Competitions.Get(context.Background(), 1, wfa.Int(2026)); err != nil {
+	if _, err := c.Competitions.Get(context.Background(), 1, wfa.SnowflakePtr(2026)); err != nil {
 		t.Fatalf("Get: %v", err)
 	}
 

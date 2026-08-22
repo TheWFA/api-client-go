@@ -33,3 +33,7 @@ func Int(v int) *int { return &v }
 // Bool returns a pointer to v. It's a convenience for populating the optional
 // *bool fields on query types.
 func Bool(v bool) *bool { return &v }
+
+// SnowflakePtr returns a pointer to v. It's a convenience for populating the
+// optional *Snowflake fields on query types.
+func SnowflakePtr(v Snowflake) *Snowflake { return &v }

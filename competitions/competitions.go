@@ -22,7 +22,7 @@ const (
 
 // Competition is a summary of a competition.
 type Competition struct {
-	ID           int                  `json:"id"`
+	ID           wfa.Snowflake        `json:"id"`
 	Name         string               `json:"name"`
 	Type         Type                 `json:"type"`
 	BadgeURL     *string              `json:"badgeUrl"`
@@ -44,26 +44,26 @@ const (
 // MatchGroupProgression describes where teams progress to from a match
 // group.
 type MatchGroupProgression struct {
-	ToGroupID            int  `json:"toGroupId"`
-	ProgressingTeamCount *int `json:"progressingTeamCount"`
+	ToGroupID            wfa.Snowflake `json:"toGroupId"`
+	ProgressingTeamCount *int          `json:"progressingTeamCount"`
 }
 
 // MatchGroup is a single stage of a competition's structure, e.g. a game
 // week, pool or knockout round.
 type MatchGroup struct {
-	ID             int                     `json:"id"`
+	ID             wfa.Snowflake           `json:"id"`
 	GroupName      string                  `json:"groupName"`
 	GroupType      *MatchGroupType         `json:"groupType"`
 	RoundNumber    *int                    `json:"roundNumber"`
 	AdvancingSpots *int                    `json:"advancingSpots"`
-	SeasonID       int                     `json:"seasonId"`
+	SeasonID       wfa.Snowflake           `json:"seasonId"`
 	Progressions   []MatchGroupProgression `json:"progressions"`
 }
 
 // FullCompetition is a Competition with its current season, match groups,
 // and, when requested, its history.
 type FullCompetition struct {
-	ID           int                   `json:"id"`
+	ID           wfa.Snowflake         `json:"id"`
 	Name         string                `json:"name"`
 	Type         Type                  `json:"type"`
 	BadgeURL     *string               `json:"badgeUrl"`
@@ -77,9 +77,9 @@ type FullCompetition struct {
 
 // MatchGroupTeam is a team seeded into a competition match group.
 type MatchGroupTeam struct {
-	MatchGroupID int         `json:"matchGroupId"`
-	Team         wfa.TeamRef `json:"team"`
-	SeedNumber   *int        `json:"seedNumber"`
+	MatchGroupID wfa.Snowflake `json:"matchGroupId"`
+	Team         wfa.TeamRef   `json:"team"`
+	SeedNumber   *int          `json:"seedNumber"`
 }
 
 // StatsSummary is a competition's aggregate stats.
@@ -175,14 +175,14 @@ type Team = teams.Team
 // ListQuery holds the filters accepted by Service.List.
 type ListQuery struct {
 	wfa.ListParams
-	OrganisationID *int
+	OrganisationID *wfa.Snowflake
 	Type           Type
 }
 
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
-	wfa.SetInt(v, "organisationId", q.OrganisationID)
+	wfa.SetSnowflake(v, "organisationId", q.OrganisationID)
 	wfa.SetString(v, "type", string(q.Type))
 
 	return v
@@ -206,24 +206,24 @@ func (s *Service) List(ctx context.Context, query ListQuery) (wfa.ListResponse[C
 
 // Get retrieves detailed information about a specific competition. If
 // seasonID is nil, the competition's active or most recent season is used.
-func (s *Service) Get(ctx context.Context, id int, seasonID *int) (FullCompetition, error) {
+func (s *Service) Get(ctx context.Context, id wfa.Snowflake, seasonID *wfa.Snowflake) (FullCompetition, error) {
 	v := url.Values{}
-	wfa.SetInt(v, "seasonId", seasonID)
+	wfa.SetSnowflake(v, "seasonId", seasonID)
 
 	return wfa.Get[FullCompetition](ctx, s.backend, fmt.Sprintf("/competitions/%d", id), v)
 }
 
 // Teams retrieves the teams registered for a competition and season. If
 // seasonID is nil, the competition's active or most recent season is used.
-func (s *Service) Teams(ctx context.Context, id int, seasonID *int) (wfa.UnpaginatedListResponse[Team], error) {
+func (s *Service) Teams(ctx context.Context, id wfa.Snowflake, seasonID *wfa.Snowflake) (wfa.UnpaginatedListResponse[Team], error) {
 	v := url.Values{}
-	wfa.SetInt(v, "seasonId", seasonID)
+	wfa.SetSnowflake(v, "seasonId", seasonID)
 
 	return wfa.Get[wfa.UnpaginatedListResponse[Team]](ctx, s.backend, fmt.Sprintf("/competitions/%d/teams", id), v)
 }
 
 // Seasons retrieves every season a competition has run.
-func (s *Service) Seasons(ctx context.Context, id int) (wfa.UnpaginatedListResponse[wfa.SeasonFull], error) {
+func (s *Service) Seasons(ctx context.Context, id wfa.Snowflake) (wfa.UnpaginatedListResponse[wfa.SeasonFull], error) {
 	return wfa.Get[wfa.UnpaginatedListResponse[wfa.SeasonFull]](ctx, s.backend, fmt.Sprintf("/competitions/%d/seasons", id), nil)
 }
 
@@ -232,16 +232,16 @@ func (s *Service) Seasons(ctx context.Context, id int) (wfa.UnpaginatedListRespo
 //
 // Returns an *wfa.APIError with StatusCode 400 for cup and friendly
 // competitions, and for a competition with no registered season.
-func (s *Service) Table(ctx context.Context, id int, seasonID *int) (Table, error) {
+func (s *Service) Table(ctx context.Context, id wfa.Snowflake, seasonID *wfa.Snowflake) (Table, error) {
 	v := url.Values{}
-	wfa.SetInt(v, "seasonId", seasonID)
+	wfa.SetSnowflake(v, "seasonId", seasonID)
 
 	return wfa.Get[Table](ctx, s.backend, fmt.Sprintf("/competitions/%d/table", id), v)
 }
 
 // MatchGroupTeams retrieves the teams in a match group stage, with their
 // bracket seeds.
-func (s *Service) MatchGroupTeams(ctx context.Context, id, groupID int) (wfa.UnpaginatedListResponse[MatchGroupTeam], error) {
+func (s *Service) MatchGroupTeams(ctx context.Context, id, groupID wfa.Snowflake) (wfa.UnpaginatedListResponse[MatchGroupTeam], error) {
 	return wfa.Get[wfa.UnpaginatedListResponse[MatchGroupTeam]](ctx, s.backend, fmt.Sprintf("/competitions/%d/match-groups/%d/teams", id, groupID), nil)
 }
 
@@ -252,7 +252,7 @@ type StatsService struct {
 }
 
 // Summary retrieves aggregate statistics for a competition.
-func (s *StatsService) Summary(ctx context.Context, id int, query wfa.StatsFilterQuery) (StatsSummary, error) {
+func (s *StatsService) Summary(ctx context.Context, id wfa.Snowflake, query wfa.StatsFilterQuery) (StatsSummary, error) {
 	v := url.Values{}
 	query.Apply(v)
 
@@ -260,11 +260,11 @@ func (s *StatsService) Summary(ctx context.Context, id int, query wfa.StatsFilte
 }
 
 // Teams retrieves per-team aggregate statistics for a competition.
-func (s *StatsService) Teams(ctx context.Context, id int, query TeamsStatsQuery) (wfa.ListResponse[TeamStatsRow], error) {
+func (s *StatsService) Teams(ctx context.Context, id wfa.Snowflake, query TeamsStatsQuery) (wfa.ListResponse[TeamStatsRow], error) {
 	return wfa.Get[wfa.ListResponse[TeamStatsRow]](ctx, s.backend, fmt.Sprintf("/competitions/%d/stats/teams", id), query.encode())
 }
 
 // Players retrieves per-player aggregate statistics for a competition.
-func (s *StatsService) Players(ctx context.Context, id int, query wfa.PlayerStatsQuery) (wfa.ListResponse[wfa.PlayerStatsRow], error) {
+func (s *StatsService) Players(ctx context.Context, id wfa.Snowflake, query wfa.PlayerStatsQuery) (wfa.ListResponse[wfa.PlayerStatsRow], error) {
 	return wfa.Get[wfa.ListResponse[wfa.PlayerStatsRow]](ctx, s.backend, fmt.Sprintf("/competitions/%d/stats/players", id), query.Encode())
 }

@@ -15,13 +15,13 @@ type Season = wfa.SeasonRef
 
 // FullSeason is a SeasonRef with its active flag and team/competition counts.
 type FullSeason struct {
-	ID                  int      `json:"id"`
-	Name                string   `json:"name"`
-	StartDate           wfa.Time `json:"startDate"`
-	EndDate             wfa.Time `json:"endDate"`
-	Active              bool     `json:"active"`
-	CompetitionCount    int      `json:"competitionCount"`
-	RegisteredTeamCount int      `json:"registeredTeamCount"`
+	ID                  wfa.Snowflake `json:"id"`
+	Name                string        `json:"name"`
+	StartDate           wfa.Time      `json:"startDate"`
+	EndDate             wfa.Time      `json:"endDate"`
+	Active              bool          `json:"active"`
+	CompetitionCount    int           `json:"competitionCount"`
+	RegisteredTeamCount int           `json:"registeredTeamCount"`
 }
 
 // ListQuery holds the filters accepted by Service.List.
@@ -56,6 +56,6 @@ func (s *Service) List(ctx context.Context, query ListQuery) (wfa.ListResponse[S
 }
 
 // Get retrieves a single season by its unique identifier.
-func (s *Service) Get(ctx context.Context, id int) (FullSeason, error) {
+func (s *Service) Get(ctx context.Context, id wfa.Snowflake) (FullSeason, error) {
 	return wfa.Get[FullSeason](ctx, s.backend, fmt.Sprintf("/seasons/%d", id), nil)
 }

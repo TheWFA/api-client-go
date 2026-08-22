@@ -12,25 +12,25 @@ import (
 
 // Accreditation is a summary of an accreditation.
 type Accreditation struct {
-	ID             int      `json:"id"`
-	Name           string   `json:"name"`
-	Description    string   `json:"description"`
-	Category       string   `json:"category"`
-	IssuingBody    string   `json:"issuingBody"`
-	ValidityPeriod *int     `json:"validityPeriod"`
-	CreatedAt      wfa.Time `json:"createdAt"`
+	ID             wfa.Snowflake `json:"id"`
+	Name           string        `json:"name"`
+	Description    string        `json:"description"`
+	Category       string        `json:"category"`
+	IssuingBody    string        `json:"issuingBody"`
+	ValidityPeriod *int          `json:"validityPeriod"`
+	CreatedAt      wfa.Time      `json:"createdAt"`
 }
 
 // FullAccreditation is an Accreditation with its holder count.
 type FullAccreditation struct {
-	ID             int      `json:"id"`
-	Name           string   `json:"name"`
-	Description    string   `json:"description"`
-	Category       string   `json:"category"`
-	IssuingBody    string   `json:"issuingBody"`
-	ValidityPeriod *int     `json:"validityPeriod"`
-	CreatedAt      wfa.Time `json:"createdAt"`
-	HolderCount    int      `json:"holderCount"`
+	ID             wfa.Snowflake `json:"id"`
+	Name           string        `json:"name"`
+	Description    string        `json:"description"`
+	Category       string        `json:"category"`
+	IssuingBody    string        `json:"issuingBody"`
+	ValidityPeriod *int          `json:"validityPeriod"`
+	CreatedAt      wfa.Time      `json:"createdAt"`
+	HolderCount    int           `json:"holderCount"`
 }
 
 // Facets lists the categories and issuing bodies currently in use.
@@ -76,6 +76,6 @@ func (s *Service) Facets(ctx context.Context) (Facets, error) {
 }
 
 // Get retrieves detailed information about a specific accreditation.
-func (s *Service) Get(ctx context.Context, id int) (FullAccreditation, error) {
+func (s *Service) Get(ctx context.Context, id wfa.Snowflake) (FullAccreditation, error) {
 	return wfa.Get[FullAccreditation](ctx, s.backend, fmt.Sprintf("/accreditations/%d", id), nil)
 }

@@ -53,6 +53,20 @@ func SetInts(v url.Values, key string, vals []int) {
 	}
 }
 
+// SetSnowflake sets key to val in v, unless val is nil.
+func SetSnowflake(v url.Values, key string, val *Snowflake) {
+	if val != nil {
+		v.Set(key, val.String())
+	}
+}
+
+// SetSnowflakes encodes vals as repeated indexed parameters, matching SetInts.
+func SetSnowflakes(v url.Values, key string, vals []Snowflake) {
+	for i, n := range vals {
+		v.Set(fmt.Sprintf("%s[%d]", key, i), n.String())
+	}
+}
+
 // SetStrings encodes vals as repeated indexed parameters, matching SetInts.
 func SetStrings(v url.Values, key string, vals []string) {
 	for i, s := range vals {

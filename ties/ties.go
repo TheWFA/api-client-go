@@ -14,14 +14,14 @@ import (
 
 // Leg is a single leg of a two-legged tie.
 type Leg struct {
-	MatchID      int         `json:"matchId"`
-	LegNumber    *int        `json:"legNumber"`
-	ScheduledFor *wfa.Time   `json:"scheduledFor"`
-	Status       string      `json:"status"`
-	HomeTeam     wfa.TeamRef `json:"homeTeam"`
-	AwayTeam     wfa.TeamRef `json:"awayTeam"`
-	HomeScore    int         `json:"homeScore"`
-	AwayScore    int         `json:"awayScore"`
+	MatchID      wfa.Snowflake `json:"matchId"`
+	LegNumber    *int          `json:"legNumber"`
+	ScheduledFor *wfa.Time     `json:"scheduledFor"`
+	Status       string        `json:"status"`
+	HomeTeam     wfa.TeamRef   `json:"homeTeam"`
+	AwayTeam     wfa.TeamRef   `json:"awayTeam"`
+	HomeScore    int           `json:"homeScore"`
+	AwayScore    int           `json:"awayScore"`
 }
 
 // Aggregate is the aggregate score across a tie's legs.
@@ -33,7 +33,7 @@ type Aggregate struct {
 
 // Tie is a two-legged tie, with its legs and aggregate score.
 type Tie struct {
-	ID          int                    `json:"id"`
+	ID          wfa.Snowflake          `json:"id"`
 	Competition wfa.CompetitionMiniRef `json:"competition"`
 	Season      wfa.SeasonMiniRef      `json:"season"`
 	HomeTeam    wfa.TeamRef            `json:"homeTeam"`
@@ -46,17 +46,17 @@ type Tie struct {
 // ListQuery holds the filters accepted by Service.List.
 type ListQuery struct {
 	wfa.ListParams
-	CompetitionID *int
-	SeasonID      *int
-	TeamID        *int
+	CompetitionID *wfa.Snowflake
+	SeasonID      *wfa.Snowflake
+	TeamID        *wfa.Snowflake
 }
 
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
-	wfa.SetInt(v, "competitionId", q.CompetitionID)
-	wfa.SetInt(v, "seasonId", q.SeasonID)
-	wfa.SetInt(v, "teamId", q.TeamID)
+	wfa.SetSnowflake(v, "competitionId", q.CompetitionID)
+	wfa.SetSnowflake(v, "seasonId", q.SeasonID)
+	wfa.SetSnowflake(v, "teamId", q.TeamID)
 
 	return v
 }
@@ -78,6 +78,6 @@ func (s *Service) List(ctx context.Context, query ListQuery) (wfa.ListResponse[T
 }
 
 // Get retrieves a single tie by ID.
-func (s *Service) Get(ctx context.Context, id int) (Tie, error) {
+func (s *Service) Get(ctx context.Context, id wfa.Snowflake) (Tie, error) {
 	return wfa.Get[Tie](ctx, s.backend, fmt.Sprintf("/ties/%d", id), nil)
 }

@@ -11,27 +11,27 @@ import (
 
 // Club is a summary of a club.
 type Club struct {
-	ID           int      `json:"id"`
-	Name         string   `json:"name"`
-	ClubLogo     *string  `json:"clubLogo"`
-	ContactEmail *string  `json:"contactEmail"`
-	CreatedAt    wfa.Time `json:"createdAt"`
+	ID           wfa.Snowflake `json:"id"`
+	Name         string        `json:"name"`
+	ClubLogo     *string       `json:"clubLogo"`
+	ContactEmail *string       `json:"contactEmail"`
+	CreatedAt    wfa.Time      `json:"createdAt"`
 }
 
 // TeamRef is a lightweight reference to a team, as embedded in FullClub.
 type TeamRef struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Abbreviated string `json:"abbreviated"`
-	Nickname    string `json:"nickname"`
-	BadgeURL    string `json:"badgeUrl"`
-	Primary     string `json:"primary"`
-	Secondary   string `json:"secondary"`
+	ID          wfa.Snowflake `json:"id"`
+	Name        string        `json:"name"`
+	Abbreviated string        `json:"abbreviated"`
+	Nickname    string        `json:"nickname"`
+	BadgeURL    string        `json:"badgeUrl"`
+	Primary     string        `json:"primary"`
+	Secondary   string        `json:"secondary"`
 }
 
 // FullClub is a Club with its teams and, when requested, its history.
 type FullClub struct {
-	ID           int                `json:"id"`
+	ID           wfa.Snowflake      `json:"id"`
 	Name         string             `json:"name"`
 	ClubLogo     *string            `json:"clubLogo"`
 	ContactEmail *string            `json:"contactEmail"`
@@ -69,6 +69,6 @@ func (s *Service) List(ctx context.Context, query ListQuery) (wfa.ListResponse[C
 
 // Get retrieves detailed information about a specific club, including its
 // teams.
-func (s *Service) Get(ctx context.Context, id int) (FullClub, error) {
+func (s *Service) Get(ctx context.Context, id wfa.Snowflake) (FullClub, error) {
 	return wfa.Get[FullClub](ctx, s.backend, fmt.Sprintf("/clubs/%d", id), nil)
 }

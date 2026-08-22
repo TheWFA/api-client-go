@@ -24,11 +24,11 @@ func New(backend *wfa.Backend) *Service {
 //
 // Each entry is valid over [ValidFrom, ValidTo); an entry with a nil ValidTo
 // is the open-ended current window.
-func (s *Service) List(ctx context.Context, entity wfa.HistoryEntity, entityID int) (wfa.UnpaginatedListResponse[wfa.HistoryEntry], error) {
+func (s *Service) List(ctx context.Context, entity wfa.HistoryEntity, entityID wfa.Snowflake) (wfa.UnpaginatedListResponse[wfa.HistoryEntry], error) {
 	return wfa.Get[wfa.UnpaginatedListResponse[wfa.HistoryEntry]](ctx, s.backend, fmt.Sprintf("/history/%s/%d", entity, entityID), nil)
 }
 
 // Get retrieves a single history entry by ID.
-func (s *Service) Get(ctx context.Context, entity wfa.HistoryEntity, entityID, historyID int) (wfa.HistoryEntry, error) {
+func (s *Service) Get(ctx context.Context, entity wfa.HistoryEntity, entityID, historyID wfa.Snowflake) (wfa.HistoryEntry, error) {
 	return wfa.Get[wfa.HistoryEntry](ctx, s.backend, fmt.Sprintf("/history/%s/%d/%d", entity, entityID, historyID), nil)
 }

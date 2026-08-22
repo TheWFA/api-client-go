@@ -141,6 +141,24 @@ matchesSvc := matches.New(backend)
 
 ---
 
+## IDs
+
+Every entity ID (and foreign-key reference to one) is a `wfa.Snowflake` — an unsigned 64-bit integer with custom JSON marshaling so large IDs survive round-tripping through consumers that decode JSON numbers as `float64`:
+
+```go
+match, err := c.Matches.Get(ctx, 123) // an untyped int literal converts automatically
+
+var teamID wfa.Snowflake = someTeam.ID
+team, err := c.Teams.Get(ctx, teamID)
+
+// Converting a caller-supplied value (string, any integer/float type) to a Snowflake:
+id, err := wfa.GetSnowflake(userInput)
+```
+
+Optional ID filters on query types are `*wfa.Snowflake` — use `wfa.SnowflakePtr(v)` to build one.
+
+---
+
 ## Pagination
 
 Most list endpoints return a `wfa.ListResponse[T]`:

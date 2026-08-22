@@ -23,22 +23,22 @@ const (
 // OffenceRef is a lightweight reference to the offence that originated a
 // suspension.
 type OffenceRef struct {
-	ID               int    `json:"id"`
-	Name             string `json:"name"`
-	SuspensionLength int    `json:"suspensionLength"`
+	ID               wfa.Snowflake `json:"id"`
+	Name             string        `json:"name"`
+	SuspensionLength int           `json:"suspensionLength"`
 }
 
 // Origin describes the discipline record a suspension arose from.
 type Origin struct {
-	DisciplineID int         `json:"disciplineId"`
-	Card         string      `json:"card"`
-	Offence      *OffenceRef `json:"offence"`
+	DisciplineID wfa.Snowflake `json:"disciplineId"`
+	Card         string        `json:"card"`
+	Offence      *OffenceRef   `json:"offence"`
 }
 
 // ServedInMatch is a lightweight match reference, as embedded in
 // Suspension.ServedIn.
 type ServedInMatch struct {
-	ID           int             `json:"id"`
+	ID           wfa.Snowflake   `json:"id"`
 	ScheduledFor *wfa.Time       `json:"scheduledFor"`
 	Status       string          `json:"status"`
 	HomeTeam     wfa.TeamMiniRef `json:"homeTeam"`
@@ -47,7 +47,7 @@ type ServedInMatch struct {
 
 // Suspension is a single suspension.
 type Suspension struct {
-	ID               int                    `json:"id"`
+	ID               wfa.Snowflake          `json:"id"`
 	Person           wfa.PersonRef          `json:"person"`
 	Competition      wfa.CompetitionMiniRef `json:"competition"`
 	Season           wfa.SeasonMiniRef      `json:"season"`
@@ -63,11 +63,11 @@ type Suspension struct {
 // ListQuery holds the filters accepted by Service.List.
 type ListQuery struct {
 	wfa.ListParams
-	PersonID        *int
-	CompetitionID   *int
-	SeasonID        *int
-	ServedInMatchID *int
-	OriginMatchID   *int
+	PersonID        *wfa.Snowflake
+	CompetitionID   *wfa.Snowflake
+	SeasonID        *wfa.Snowflake
+	ServedInMatchID *wfa.Snowflake
+	OriginMatchID   *wfa.Snowflake
 	Status          []Status
 	ActiveOnly      *bool
 }
@@ -75,11 +75,11 @@ type ListQuery struct {
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
-	wfa.SetInt(v, "personId", q.PersonID)
-	wfa.SetInt(v, "competitionId", q.CompetitionID)
-	wfa.SetInt(v, "seasonId", q.SeasonID)
-	wfa.SetInt(v, "servedInMatchId", q.ServedInMatchID)
-	wfa.SetInt(v, "originMatchId", q.OriginMatchID)
+	wfa.SetSnowflake(v, "personId", q.PersonID)
+	wfa.SetSnowflake(v, "competitionId", q.CompetitionID)
+	wfa.SetSnowflake(v, "seasonId", q.SeasonID)
+	wfa.SetSnowflake(v, "servedInMatchId", q.ServedInMatchID)
+	wfa.SetSnowflake(v, "originMatchId", q.OriginMatchID)
 	wfa.SetEnums(v, "status", q.Status)
 	wfa.SetBool(v, "activeOnly", q.ActiveOnly)
 
@@ -90,10 +90,10 @@ func (q ListQuery) encode() url.Values {
 // i.e. ListQuery without PersonID.
 type PersonQuery struct {
 	wfa.ListParams
-	CompetitionID   *int
-	SeasonID        *int
-	ServedInMatchID *int
-	OriginMatchID   *int
+	CompetitionID   *wfa.Snowflake
+	SeasonID        *wfa.Snowflake
+	ServedInMatchID *wfa.Snowflake
+	OriginMatchID   *wfa.Snowflake
 	Status          []Status
 	ActiveOnly      *bool
 }
@@ -102,10 +102,10 @@ type PersonQuery struct {
 func (q PersonQuery) Encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
-	wfa.SetInt(v, "competitionId", q.CompetitionID)
-	wfa.SetInt(v, "seasonId", q.SeasonID)
-	wfa.SetInt(v, "servedInMatchId", q.ServedInMatchID)
-	wfa.SetInt(v, "originMatchId", q.OriginMatchID)
+	wfa.SetSnowflake(v, "competitionId", q.CompetitionID)
+	wfa.SetSnowflake(v, "seasonId", q.SeasonID)
+	wfa.SetSnowflake(v, "servedInMatchId", q.ServedInMatchID)
+	wfa.SetSnowflake(v, "originMatchId", q.OriginMatchID)
 	wfa.SetEnums(v, "status", q.Status)
 	wfa.SetBool(v, "activeOnly", q.ActiveOnly)
 
@@ -132,6 +132,6 @@ func (s *Service) List(ctx context.Context, query ListQuery) (wfa.ListResponse[S
 }
 
 // Get retrieves a single suspension by ID.
-func (s *Service) Get(ctx context.Context, id int) (Suspension, error) {
+func (s *Service) Get(ctx context.Context, id wfa.Snowflake) (Suspension, error) {
 	return wfa.Get[Suspension](ctx, s.backend, fmt.Sprintf("/suspensions/%d", id), nil)
 }
