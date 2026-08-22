@@ -65,12 +65,12 @@ jobs:
         with:
           go-version: "1.x"
 
-      - uses: golangci/golangci-lint-action@v6
+      - uses: golangci/golangci-lint-action@v7
         with:
-          # "latest" on this action resolves to an old v1.x release that
-          # can't typecheck a module whose root directory is itself an
-          # importable package (fails with spurious "undefined: wfa" errors
-          # in every subpackage). Pin to a v2 release verified to work.
+          # v6 of this action only supports golangci-lint v1, which has a
+          # typecheck bug on a module whose root directory is itself an
+          # importable package ("undefined: wfa" in every subpackage). v7
+          # supports v2, which is verified clean on this codebase.
           version: v2.13.1
           args: --build-tags=integration
 
