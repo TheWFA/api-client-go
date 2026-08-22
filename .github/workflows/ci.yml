@@ -80,7 +80,7 @@ jobs:
     # Only on pushes to main, never on pull_request — PRs from forks don't
     # get environment secrets, and this hits the real API on every run.
     if: github.event_name == 'push'
-    environment: Development
+    environment: Default
     steps:
       - uses: actions/checkout@v4
 
