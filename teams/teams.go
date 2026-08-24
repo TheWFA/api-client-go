@@ -106,12 +106,14 @@ type StatsSummary struct {
 // ListQuery holds the filters accepted by Service.List.
 type ListQuery struct {
 	wfa.ListParams
+	ID     []wfa.Snowflake
 	ClubID *wfa.Snowflake
 }
 
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
+	wfa.SetSnowflakes(v, "id", q.ID)
 	wfa.SetSnowflake(v, "clubId", q.ClubID)
 
 	return v

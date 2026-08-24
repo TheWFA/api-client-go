@@ -175,6 +175,7 @@ type Team = teams.Team
 // ListQuery holds the filters accepted by Service.List.
 type ListQuery struct {
 	wfa.ListParams
+	ID             []wfa.Snowflake
 	OrganisationID *wfa.Snowflake
 	Type           Type
 }
@@ -182,6 +183,7 @@ type ListQuery struct {
 func (q ListQuery) encode() url.Values {
 	v := url.Values{}
 	q.Apply(v)
+	wfa.SetSnowflakes(v, "id", q.ID)
 	wfa.SetSnowflake(v, "organisationId", q.OrganisationID)
 	wfa.SetString(v, "type", string(q.Type))
 
